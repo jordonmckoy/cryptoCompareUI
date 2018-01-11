@@ -7,7 +7,7 @@ import { AppComponent } from './app.component';
 import { CurrencyLogoComponent } from './currency-logo/currency-logo.component';
 import { CurrencySelectorComponent } from './currency-selector/currency-selector.component';
 import { CurrencyBlockComponent } from './currency-block/currency-block.component';
-import { CryptoCompareService } from 'app/crypto-compare.service';
+import { CryptoCompareService } from './services/crypto-compare.service';
 
 @NgModule({
   declarations: [

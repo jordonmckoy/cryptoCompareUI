@@ -1,7 +1,8 @@
 import { Component, OnInit, Input, Output } from '@angular/core';
-import { CryptoCompareService } from 'app/crypto-compare.service';
+import { CryptoCompareService } from '../services/crypto-compare.service';
 import * as R from 'ramda';
 import { SimpleChanges, OnChanges } from '@angular/core/src/metadata/lifecycle_hooks';
+
 
 
 @Component({
@@ -12,7 +13,7 @@ import { SimpleChanges, OnChanges } from '@angular/core/src/metadata/lifecycle_h
         [selectedVal]="selectedVal" 
         [lCoins]="lCoins"
         (selectedValChange)="updateVal($event)"
-      ></app-currency-selector> 
+      ></app-currency-selector>
     <p>Parent: {{selectedVal}} {{price}}</p>
   `
 })
@@ -54,20 +55,20 @@ export class CurrencyBlockComponent implements OnInit {
   setPrices(coin: string) {
     if (this.fetchData) {
       this._cryptoService.getCoinPrice(coin)
-        .then(res => {
-          this.lCoins = this.mapIndexed((val, id) => (Object.assign({}, val, { id })), this.coinValues(res));
-        })
-        .then(() => {
+        .subscribe(data => {
+          this.lCoins = this.mapIndexed((val, id) => (Object.assign({}, val, { id })), this.coinValues(data));
+          console.log('lCoins', this.lCoins);
           this.price = R.find(R.propEq('symbol', coin))(this.lCoins)['price'];
           this.selectedVal = coin;
 
           this.setImagePath(coin);
-        });
+        },
+        err => console.log(err));
     } else {
       this.price = R.find(R.propEq('symbol', coin))(this.lCoins)['price'];
       this.selectedVal = coin;
 
-      this.setImagePath(coin); 
+      this.setImagePath(coin);
     }
   }
 
