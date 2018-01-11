@@ -1,17 +1,16 @@
 import { Component, OnInit, Output, Input, EventEmitter } from '@angular/core';
-import * as R from 'ramda';
 import { OnChanges, SimpleChanges } from '@angular/core/src/metadata/lifecycle_hooks';
 
 @Component({
   selector: 'app-currency-selector',
   template: `
     <select [compareWith]="compareFn" [ngModel]="selectedVal" (ngModelChange)="updateVal($event)">
-      <option *ngFor="let coin of lCoins" [ngValue]="coin.symbol">
+      <option *ngFor="let coin of portfolio" [ngValue]="coin.symbol">
         {{coin.symbol}}
         {{coin.price}}
       </option>
     </select>
-    <p>Child: {{selectedVal}} {{price}}</p>
+    <p>Child: {{selectedVal}}</p>
   `,
   styles: []
 })
@@ -20,9 +19,7 @@ export class CurrencySelectorComponent implements OnInit, OnChanges {
   @Input() selectedVal: string;
   @Output() selectedValChange = new EventEmitter<any>();
 
-  @Input() lCoins: any;
-
-  price: number;
+  @Input() portfolio: any;
 
   constructor() { }
 
@@ -30,11 +27,6 @@ export class CurrencySelectorComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    this.setPrice();
-  }
-
-  setPrice() {
-    this.price = R.find(R.propEq('symbol', this.selectedVal))(this.lCoins)['price'];
   }
 
   updateVal(value) {

@@ -7,7 +7,9 @@ import { AppComponent } from './app.component';
 import { CurrencyLogoComponent } from './currency-logo/currency-logo.component';
 import { CurrencySelectorComponent } from './currency-selector/currency-selector.component';
 import { CurrencyBlockComponent } from './currency-block/currency-block.component';
-import { CryptoCompareService } from './services/crypto-compare.service';
+import { CryptoApiService } from './services/crypto-api.service';
+import { CryptoCompareService } from 'app/services/crypto-compare.service';
+
 
 @NgModule({
   declarations: [
@@ -21,7 +23,7 @@ import { CryptoCompareService } from './services/crypto-compare.service';
     FormsModule,
     HttpModule
   ],
-  providers: [CryptoCompareService],
+  providers: [CryptoApiService,CryptoCompareService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

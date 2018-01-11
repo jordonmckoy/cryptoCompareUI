@@ -1,27 +1,47 @@
-import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
-import 'rxjs/Rx';
-import { Observable } from 'rxjs/Observable';
-import { PortfolioData } from 'app/models/portfolioData';
+import { Injectable, Output } from '@angular/core';
+import { CryptoApiService } from 'app/services/crypto-api.service';
+import * as R from 'ramda';
 
 @Injectable()
 export class CryptoCompareService {
 
-  private http: Http;
-
-  sysCoins = [
-    'ETH', 'USD', 'XRP'
+  portfolio: any = [
+    { id: 0, symbol: 'ETH', price: '0.00' },
+    { id: 1, symbol: 'USD', price: '0.00' },
+    { id: 2, symbol: 'XRP', price: '0.00' }
   ];
 
-  constructor(http: Http) {
-    this.http = http;
+  imagePath = '';
+
+  mapIndexed = R.addIndex(R.map);
+  buildCoinObj = (val, key) => ({ 'symbol': key, 'price': val });
+  coinValues = (coins) => R.values(R.mapObjIndexed(this.buildCoinObj, coins));
+
+  constructor(private cryptoApi: CryptoApiService) {
   }
 
-  getCoinPrice(coin: string): Observable<PortfolioData> {
-    const portfolio = [];
+  getPortfolioData(coin) {
+    return this.cryptoApi.getMultiPrice(coin);
+  }
 
-    return this.http.get(`https://min-api.cryptocompare.com/data/pricemulti?fsyms=${coin}&tsyms=${this.sysCoins.join()}`)
-      .map(data => data.json()[coin])
-      .catch((error: any) => Observable.throw(error || 'Server error'));
+  getPriceByCoin(coin: string) {
+    return R.find(R.propEq('symbol', coin))(this.portfolio)['price'];
+  }
+
+  setImagePath(coin: string) {
+    const baseImgPath = './assets/currency/';
+
+    switch (coin) {
+      case 'ETH':
+        this.imagePath = baseImgPath + 'ethereum.png';
+        break;
+      case 'USD':
+        this.imagePath = baseImgPath + 'dollar.png';
+        break;
+      case 'XRP':
+        this.imagePath = baseImgPath + 'ripple.png';
+    }
+
+    return this.imagePath;
   }
 }
