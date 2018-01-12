@@ -4,6 +4,7 @@ import { Component } from '@angular/core';
   selector: 'app-root',
   template: `
     <app-currency-block [fetchData]="true"></app-currency-block>
+    <app-currency-block></app-currency-block>
   `
 })
 export class AppComponent {

@@ -12,7 +12,6 @@ import { SimpleChanges, OnChanges } from '@angular/core/src/metadata/lifecycle_h
       [portfolio]="portfolio"
       (selectedValChange)="updateVal($event)"
     ></app-currency-selector>
-    <p>Parent: {{selectedVal}}</p>
   `
 })
 export class CurrencyBlockComponent implements OnInit {
@@ -39,6 +38,7 @@ export class CurrencyBlockComponent implements OnInit {
 
       this.selectedVal = coin;
     } else {
+      this.portfolio = this.cryptoCompareService.portfolio;
       this.selectedVal = coin;
     }
   }
