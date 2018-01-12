@@ -4,10 +4,9 @@ import { OnChanges, SimpleChanges } from '@angular/core/src/metadata/lifecycle_h
 @Component({
   selector: 'app-currency-selector',
   template: `
-    <select [ngModel]="selectedVal" (ngModelChange)="updateVal($event)">
+    <select [ngModel]="selectedVal" (ngModelChange)="updatePortfolio($event)">
       <option *ngFor="let coin of portfolio" [ngValue]="coin.symbol">
         {{coin.symbol}}
-        {{coin.price}}
       </option>
     </select>
   `,
@@ -28,7 +27,7 @@ export class CurrencySelectorComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
   }
 
-  updateVal(value) {
+  updatePortfolio(value) {
     this.selectedValChange.emit(value);
   }
 

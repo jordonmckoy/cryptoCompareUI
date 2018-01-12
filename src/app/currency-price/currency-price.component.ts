@@ -3,21 +3,18 @@ import { CryptoCompareService } from 'app/services/crypto-compare.service';
 import { OnChanges } from '@angular/core/src/metadata/lifecycle_hooks';
 
 @Component({
-  selector: 'app-currency-logo',
+  selector: 'app-currency-price',
   template: `
-    <img class="logo" [src]="imagePath">
+    {{price}}
   `,
-  styles: [`
-    .logo {
-      width: 200px;
-      height: 200px;
-    }
-  `]
+  styles: []
 })
-export class CurrencyLogoComponent implements OnInit, OnChanges {
+export class CurrencyPriceComponent implements OnInit, OnChanges {
 
   @Input() coin: string;
-  imagePath: string;
+  @Input() portfolio: any;
+  price: number;
+
 
   constructor(@Inject(CryptoCompareService) private cryptoCompareService) { }
 
@@ -25,7 +22,7 @@ export class CurrencyLogoComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges() {
-    this.imagePath = this.cryptoCompareService.setImagePath(this.coin);
+    this.price = this.cryptoCompareService.getPriceByCoin(this.coin, this.portfolio);
   }
 
 }

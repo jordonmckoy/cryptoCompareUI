@@ -11,8 +11,6 @@ export class CryptoCompareService {
     { id: 2, symbol: 'XRP', price: '0.00' }
   ];
 
-  imagePath = '';
-
   mapIndexed = R.addIndex(R.map);
   buildCoinObj = (val, key) => ({ 'symbol': key, 'price': val });
   coinValues = (coins) => R.values(R.mapObjIndexed(this.buildCoinObj, coins));
@@ -21,27 +19,42 @@ export class CryptoCompareService {
   }
 
   getPortfolioData(coin) {
-    return this.cryptoApi.getMultiPrice(coin);
+    return this.cryptoApi.getMultiPrice(coin)
+      .map(res => this.mapIndexed(
+        (val, id) => (
+          Object.assign({}, val, { id })
+        ), this.coinValues(res)
+      ));
   }
 
-  getPriceByCoin(coin: string) {
-    return R.find(R.propEq('symbol', coin))(this.portfolio)['price'];
+  getPriceByCoin(coin: string, portfolio: any) {
+    return R.find(R.propEq('symbol', coin))(portfolio)['price'];
+  }
+
+  setPortfolioData(data) {
+    this.portfolio = data;
+    return this.portfolio;
   }
 
   setImagePath(coin: string) {
     const baseImgPath = './assets/currency/';
+    let imagePath: string;
 
     switch (coin) {
       case 'ETH':
-        this.imagePath = baseImgPath + 'ethereum.png';
+        imagePath = baseImgPath + 'ethereum.png';
         break;
       case 'USD':
-        this.imagePath = baseImgPath + 'dollar.png';
+        imagePath = baseImgPath + 'dollar.png';
         break;
       case 'XRP':
-        this.imagePath = baseImgPath + 'ripple.png';
+        imagePath = baseImgPath + 'ripple.png';
+        break;
+      default:
+        imagePath = baseImgPath + 'ethereum.png';
+        break;
     }
 
-    return this.imagePath;
+    return imagePath;
   }
 }

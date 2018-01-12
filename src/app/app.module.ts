@@ -9,6 +9,8 @@ import { CurrencySelectorComponent } from './currency-selector/currency-selector
 import { CurrencyBlockComponent } from './currency-block/currency-block.component';
 import { CryptoApiService } from './services/crypto-api.service';
 import { CryptoCompareService } from 'app/services/crypto-compare.service';
+import { CurrencyBlockParentComponent } from 'app/currency-block-parent/currency-block-parent.component';
+import { CurrencyPriceComponent } from 'app/currency-price/currency-price.component';
 
 
 @NgModule({
@@ -16,7 +18,9 @@ import { CryptoCompareService } from 'app/services/crypto-compare.service';
     AppComponent,
     CurrencyLogoComponent,
     CurrencySelectorComponent,
-    CurrencyBlockComponent
+    CurrencyBlockComponent,
+    CurrencyBlockParentComponent,
+    CurrencyPriceComponent
   ],
   imports: [
     BrowserModule,
