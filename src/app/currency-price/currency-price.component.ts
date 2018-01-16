@@ -15,8 +15,7 @@ export class CurrencyPriceComponent implements OnInit, OnChanges {
   @Input() portfolio: any;
   price: number;
 
-
-  constructor(@Inject(CryptoCompareService) private cryptoCompareService) { }
+  constructor(private cryptoCompareService: CryptoCompareService) { }
 
   ngOnInit() {
   }

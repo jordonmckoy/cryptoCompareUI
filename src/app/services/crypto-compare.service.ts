@@ -1,39 +1,50 @@
-import { Injectable, Output } from '@angular/core';
+import { Injectable, Output, Inject } from '@angular/core';
 import { CryptoApiService } from 'app/services/crypto-api.service';
 import * as R from 'ramda';
+import { Store } from '@ngrx/store';
+import { PortfolioActions } from 'app/services/portfolioActions';
+import { AppState } from 'app/models/appState';
 
 @Injectable()
 export class CryptoCompareService {
-
-  portfolio: any = [
-    { id: 0, symbol: 'ETH', price: '0.00' },
-    { id: 1, symbol: 'USD', price: '0.00' },
-    { id: 2, symbol: 'XRP', price: '0.00' }
-  ];
 
   mapIndexed = R.addIndex(R.map);
   buildCoinObj = (val, key) => ({ 'symbol': key, 'price': val });
   coinValues = (coins) => R.values(R.mapObjIndexed(this.buildCoinObj, coins));
 
-  constructor(private cryptoApi: CryptoApiService) {
+  constructor(
+    private store: Store<any>,
+    private portfolioActions: PortfolioActions,
+    private cryptoApi: CryptoApiService
+  ) {
   }
 
   getPortfolioData(coin) {
-    return this.cryptoApi.getMultiPrice(coin)
+    this.portfolioActions.fetchPending();
+
+    this.cryptoApi.getMultiPrice(coin)
       .map(res => this.mapIndexed(
         (val, id) => (
           Object.assign({}, val, { id })
         ), this.coinValues(res)
-      ));
+      ))
+      .filter(Boolean)
+      .take(1)
+      .subscribe(
+        (currentPortfolio) => {
+          this.portfolioActions.fetchSuccess(currentPortfolio);
+        },
+        (err) => {
+          this.portfolioActions.fetchError(err);
+        }
+      );
   }
 
   getPriceByCoin(coin: string, portfolio: any) {
-    return R.find(R.propEq('symbol', coin))(portfolio)['price'];
-  }
-
-  setPortfolioData(data) {
-    this.portfolio = data;
-    return this.portfolio;
+    return portfolio ?
+      R.find(
+        R.propEq('symbol', coin)
+      )(portfolio)['price'] : null;
   }
 
   setImagePath(coin: string) {
